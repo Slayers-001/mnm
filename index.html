@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WINTER | PVP_PRO</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <canvas id="snow-canvas"></canvas>
+
+    <main class="wrapper">
+        <section class="glass-card" id="mainCard">
+            <div class="glow-border"></div>
+            <h1 id="title">WINTER</h1>
+            <div class="separator"></div>
+            
+            <div class="story-content" id="story">
+                <p>
+                    The sky is a bruised purple, heavy with the weight of a thousand storms. 
+                    As the first notes of the concerto pierce the silence, the atmosphere shifts—
+                    particles of frost begin to dance in the neon glow of the nexus. 
+                    In this frozen digital wasteland, the music is the only thing that feels warm.
+                </p>
+                <p>
+                    Vivaldi’s strings pull at the very fabric of the permafrost, 
+                    weaving a narrative of sharp winds and crystalline beauty.
+                    Welcome to the solstice.
+                </p>
+            </div>
+
+            <div class="controls">
+                <button class="btn-nexus" id="initBtn">Initiate Sequence</button>
+            </div>
+        </section>
+    </main>
+
+    <audio id="bgMusic" loop>
+        <source src="assets/winter.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
