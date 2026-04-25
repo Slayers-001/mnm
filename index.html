@@ -3,9 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WINTER | PVP_PRO</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>WINTER | DIGITAL SOLSTICE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <style>
+        :root {
+            --neon-blue: #00f2ff;
+            --dark-bg: #050505;
+            --glass: rgba(10, 10, 18, 0.85);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #snow-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 1;
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glass-card {
+            position: relative;
+            width: 85%;
+            max-width: 750px;
+            padding: 60px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+
+        .glow-line {
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 8vw, 4rem);
+            letter-spacing: 15px;
+            margin-bottom: 10px;
+            background: linear-gradient(to bottom, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .separator {
+            width: 60px; height: 1px;
+            background: var(--neon-blue);
+            margin: 25px auto;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .story-content {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #d1d1d1;
+            margin-bottom: 40px;
+            display: none;
+            text-align: center;
+        }
+
+        .btn-nexus {
+            font-family: 'Orbitron', sans-serif;
+            background: transparent;
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+            padding: 15px 45px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: bold;
+        }
+
+        .btn-nexus:hover {
+            background: var(--neon-blue);
+            color: #000;
+            box-shadow: 0 0 35px var(--neon-blue);
+            transform: scale(1.05);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .glass-card { padding: 30px; }
+            h1 { letter-spacing: 5px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -13,21 +121,19 @@
 
     <main class="wrapper">
         <section class="glass-card" id="mainCard">
-            <div class="glow-border"></div>
+            <div class="glow-line"></div>
             <h1 id="title">WINTER</h1>
             <div class="separator"></div>
             
             <div class="story-content" id="story">
                 <p>
-                    The sky is a bruised purple, heavy with the weight of a thousand storms. 
-                    As the first notes of the concerto pierce the silence, the atmosphere shifts—
-                    particles of frost begin to dance in the neon glow of the nexus. 
-                    In this frozen digital wasteland, the music is the only thing that feels warm.
+                    The air is crystalline, biting and cold. High above the permafrost, 
+                    the nexus hums with the electric energy of Vivaldi’s masterpiece. 
+                    Each violin strike is a shard of ice, each crescendo a winter gale 
+                    tearing through the digital silence.
                 </p>
-                <p>
-                    Vivaldi’s strings pull at the very fabric of the permafrost, 
-                    weaving a narrative of sharp winds and crystalline beauty.
-                    Welcome to the solstice.
+                <p style="margin-top: 20px; color: #00f2ff; font-weight: bold;">
+                    The sequence is complete.
                 </p>
             </div>
 
@@ -37,12 +143,70 @@
         </section>
     </main>
 
-    <audio id="bgMusic" loop>
-        <source src="assets/winter.mp3" type="audio/mpeg">
+    <audio id="bgMusic" loop crossorigin="anonymous">
+        <source src="https://upload.wikimedia.org/wikipedia/commons/2/22/Vivaldi_-_Winter_-_1_Allegro_Non_Molto.ogg" type="audio/ogg">
     </audio>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
-    <script src="js/script.js"></script>
+    <script>
+        // --- 1. THREE.JS SNOW ENGINE ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector('#snow-canvas'), alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.position.z = 5;
+
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        for (let i = 0; i < 2500; i++) {
+            vertices.push(THREE.MathUtils.randFloatSpread(15)); // x
+            vertices.push(THREE.MathUtils.randFloatSpread(15)); // y
+            vertices.push(THREE.MathUtils.randFloatSpread(15)); // z
+        }
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.012, transparent: true, opacity: 0.8 });
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            points.rotation.y += 0.0006;
+            points.rotation.x += 0.0003;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- 2. INTERACTIVE LOGIC ---
+        const initBtn = document.getElementById('initBtn');
+        const audio = document.getElementById('bgMusic');
+        const story = document.getElementById('story');
+
+        // Initial card fade-in
+        window.addEventListener('load', () => {
+            gsap.to("#mainCard", { opacity: 1, y: 0, duration: 1.5, ease: "expo.out" });
+        });
+
+        initBtn.addEventListener('click', () => {
+            // Attempt Audio Playback
+            audio.play().catch(err => console.log("Audio waiting for user permission."));
+
+            // Animation Sequence
+            gsap.timeline()
+                .to(initBtn, { opacity: 0, scale: 0.8, duration: 0.5, ease: "power2.in", onComplete: () => initBtn.style.display = 'none' })
+                .set(story, { display: "block", opacity: 0 })
+                .to(story, { opacity: 1, duration: 2, ease: "power1.inOut" })
+                .to(points.rotation, { y: 0.008, duration: 10, ease: "none" }); // Speed up snow
+            
+            // Visual feedback on card
+            gsap.to(".glass-card", { borderColor: "rgba(0, 242, 255, 0.6)", duration: 1 });
+        });
+
+        // Resize Handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
 </html>
